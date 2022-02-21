@@ -7,21 +7,37 @@ using UnityEngine.AI;
 public class Player : MonoBehaviour, IDamageble
 {
     public event Action onPathCompleteEvent;
+    public event Action onDiedEvent;
+
+    [SerializeField] private int health = 10;
+    [SerializeField] private bool showHealthBar;
+    [SerializeField] private GunConfig gunConfig;
+
     private Animator animator;
     private NavMeshAgent navMeshAgent;
-    [SerializeField] private Gun gun = new Gun();
-
+    private Gun gun = new PlayerGun();
+    private HealthWidget healthWidget;
     private bool isWay = false;
     private bool isBatle;
 
-    public void Initialization(Vector3 point)
+    public void Initialization(Vector3 point, BulletStorage bulletStorage)
     {
         animator = GetComponent<Animator>();
         navMeshAgent = GetComponent<NavMeshAgent>();
-        var obj = new GameObject("Bullet Pool");
-        var bulletStorage = obj.AddComponent<BulletStorage>();
-        gun.Init(bulletStorage);
+        
+        gun.Init(bulletStorage,gunConfig,gameObject);
         transform.position = point;
+
+        healthWidget = GetComponentInChildren<HealthWidget>();
+        if (healthWidget != null)
+        {
+            healthWidget.Init(health);
+            if (showHealthBar)
+            {
+                healthWidget.Show();
+            }
+           
+        }
     }
 
     public void BatleStart()
@@ -41,11 +57,11 @@ public class Player : MonoBehaviour, IDamageble
             if (true)
             {
                 var distance = (transform.position - navMeshAgent.destination).magnitude;
-                Debug.Log($"{navMeshAgent.destination}");
+                //Debug.Log($"{navMeshAgent.destination}");
                 if (distance <= navMeshAgent.stoppingDistance)
                 {
                     isWay = false;
-                    Debug.Log("PathComplete");
+                    //Debug.Log("PathComplete");
                     animator.SetBool("IsWay", false);
                     onPathCompleteEvent?.Invoke();
 
@@ -77,6 +93,16 @@ public class Player : MonoBehaviour, IDamageble
 
     public void TakeDamage(int damage)
     {
-        
+        health -= damage;
+        if (healthWidget != null && showHealthBar) healthWidget.ChangeHealth(health);
+        if (health <= 0)
+        {
+            Died();
+        }
+    }
+
+    private void Died()
+    {
+        onDiedEvent?.Invoke();
     }
 }

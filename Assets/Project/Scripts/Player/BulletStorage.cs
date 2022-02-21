@@ -44,10 +44,17 @@ public class BulletStorage : MonoBehaviour
 
     public void BulletCollision(Bullet bullet, Collider collider)
     {
-        IDamageble obj = collider.gameObject.GetComponent<IDamageble>();
-        if (obj != null)
+        GameObject obj = collider.gameObject;
+        Debug.Log(obj);
+        Debug.Log(bullet.GetParentObject());
+        if (obj == bullet.GetParentObject())
         {
-            obj.TakeDamage(bullet.damage);
+            return;
+        }
+        IDamageble damageble = obj.GetComponent<IDamageble>();
+        if (damageble != null)
+        {
+            damageble.TakeDamage(bullet.damage);
         }
 
         DisableBullet(bullet);

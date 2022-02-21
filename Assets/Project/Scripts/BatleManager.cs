@@ -9,13 +9,13 @@ public class BatleManager
 
     private List<Enemy> enemies = new List<Enemy>();
 
-    public void StartBatle(Enemy[] objs)
+    public void StartBatle(Enemy[] objs, Transform playerPosition)
     {
-        Debug.Log("Batle start");
+        //Debug.Log("Batle start");
         foreach (var item in objs)
         {
             item.onDiedEvent += DiedEnemy;
-            item.StartBatle();
+            item.StartBatle(playerPosition);
             enemies.Add(item);
         }
     }

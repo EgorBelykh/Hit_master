@@ -13,7 +13,7 @@ public class WayHandler : MonoBehaviour
     private int pointIndex = 0;
     
 
-    public void Initialization()
+    public void Initialization(BulletStorage bulletStorage)
     {
         foreach (var item in wayPoints)
         {
@@ -21,7 +21,7 @@ public class WayHandler : MonoBehaviour
             {
                 foreach (var enemy in item.enemies)
                 {
-                    enemy.Initialization();
+                    enemy.Initialization(bulletStorage);
                 }
             }
         }

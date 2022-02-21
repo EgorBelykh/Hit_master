@@ -23,7 +23,7 @@ public class HealthWidget : MonoBehaviour
     {
         currentHealth = value;
         float h = (float)currentHealth / startHealth;
-        Debug.Log(h);
+       // Debug.Log(h);
         healthText.text = currentHealth.ToString();
         healtSlider.value = h;
     }

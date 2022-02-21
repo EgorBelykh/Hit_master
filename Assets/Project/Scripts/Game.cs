@@ -37,13 +37,18 @@ public class Game : MonoBehaviour
         uIController = GetComponent<UIController>();
         uIController.Initialization();
         yield return null;
+        var obj = new GameObject("Bullet Pool");
+        var bulletStorage = obj.AddComponent<BulletStorage>();
+        yield return null;
         wayHandler = GetComponent<WayHandler>();
-        wayHandler.Initialization();
+        player = Instantiate(playerPrefab);
+        yield return null;
+        wayHandler.Initialization(bulletStorage);
         wayHandler.onWayFinishedEvent += LevelFinished;
         yield return null;
-        player = Instantiate(playerPrefab);
-        player.Initialization(wayHandler.GetPointAt(0));
+        player.Initialization(wayHandler.GetPointAt(0), bulletStorage);
         player.onPathCompleteEvent += PlayerPathComplete;
+        player.onDiedEvent += LevelFinished;
         var camera = FindObjectOfType<CinemachineVirtualCamera>();
         camera.Follow = player.transform;
         camera.LookAt = player.transform;
@@ -62,7 +67,7 @@ public class Game : MonoBehaviour
         
         if (wayHandler.GetIsBatle())
         {
-            batleManager.StartBatle(wayHandler.GetEnemies());
+            batleManager.StartBatle(wayHandler.GetEnemies(), player.transform);
             batleManager.onBatleCompleteEvent += BatleComplete;
             player.BatleStart();
             uIController.BatleScreenShow();

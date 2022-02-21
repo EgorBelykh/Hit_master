@@ -13,15 +13,23 @@ public class Bullet : MonoBehaviour
     private Vector3 direction;
     private bool isMove;
     private float timer;
+    private GameObject parentObject;
 
-    public void OnStart(Vector3 point, Vector3 direction, int speed, int damage)
+    public void OnStart(GameObject obj, Vector3 point, Vector3 direction, int speed, int damage)
     {
         isMove = true;
         SetPosition(point);
         SetDirection(direction);
         SetSpeed(speed);
         SetDamage(damage);
+        parentObject = obj;
+        Debug.Log(obj);
         Show();
+    }
+
+    public GameObject GetParentObject()
+    {
+        return parentObject;
     }
 
     public void OnStop()
@@ -76,7 +84,7 @@ public class Bullet : MonoBehaviour
     {
         
         OnStop();
-        Debug.Log($"{other.gameObject.name}");
+        //Debug.Log($"{other.gameObject.name}");
         onBulletCollisionEvent?.Invoke(this, other);
     }
 
